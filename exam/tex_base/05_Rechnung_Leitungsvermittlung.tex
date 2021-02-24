@@ -1,0 +1,23 @@
+\input{Leitungsvermittlung_commands.tex}
+\question[5]
+
+Nehmen Sie an, dass ein Netzwerk, welches mit Hilfe von Leitungsvermittlung
+arbeitet, eine Datenrate von \datarate MBit/s aufweist. Darüber hinaus ist die
+Leitung in \channels{} einzelne Kanäle aufgeteilt, so dass bis zu \channels{}
+Teilnehmer gleichzeitig kommunizieren können.  Das Schalten der Leitung dauert
+\switchingdelay ms. Wie lange dauert es für einen Teilnehmer um \data kBit
+vollständig zu übertragen?
+
+\textbf{Hinweise:} Die Ausbreitungsverzögerung soll in dieser Aufgabe vernachlässigt werden. Runden Sie Ihre Ergebnisse auf eine Stelle nach dem Komma. Stellen Sie den
+Rechenweg nachvollziehbar dar um volle Punktzahl zu erhalten.
+
+\begin{solutionbox}{5cm}
+	\[
+	\datarate MBit/s \equiv \datarate/\channels MBit/s = \channelrate MBit/s \quad\textrm{pro Kanal}
+	\]
+
+	Übertragungsverzögerung:
+	\[ \frac{\data Bit}{\channelrate MBit/s} = \transdelay ms\]
+
+	Gesamt: $\switchingdelay ms + \transdelay ms = \result ms$
+\end{solutionbox}

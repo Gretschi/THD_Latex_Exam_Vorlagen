@@ -1,0 +1,64 @@
+\vqword{Frage}
+\vpword{Punkte}
+\vsword{Erzielt}
+\vtword{Gesamt:}
+\hqword{Frage:}
+\hpword{Punkte:}
+\hsword{Erzielt:}
+\htword{Gesamt}
+\pointpoints{Punkt}{Punkte}
+\qformat{\bfseries Frage \thequestion~(\totalpoints~\points):\hfill}
+\newcommand{\Seiten}{Seite \thepage\ von \numpages}
+
+\pgfpagesdeclarelayout{boxed}
+{%
+  \edef\pgfpageoptionborder{0pt}
+}
+{%
+  \pgfpagesphysicalpageoptions
+  {%
+    logical pages=1,%
+  }
+  \pgfpageslogicalpageoptions{1}
+  {%
+    border code=\pgfsetlinewidth{1pt}\pgfstroke,%
+    border shrink=\pgfpageoptionborder,%
+    resized width=.93\pgfphysicalwidth,%
+    resized height=.95\pgfphysicalheight,%
+    center=\pgfpoint{.5\pgfphysicalwidth}{.5\pgfphysicalheight}%
+  }%
+}
+\pgfpagesuselayout{boxed}
+\extrawidth{3cm}
+\extraheadheight[-2cm]{2.02cm}
+\extrafootheight{-1cm}
+
+\newsavebox{\headbox}
+\savebox{\headbox}{%
+	\renewcommand{\arraystretch}{1.7}
+	\parbox{\textwidth}{%
+	\begin{tabularx}{\linewidth}{|X|X|X|X|}
+	\hline
+	\multicolumn{2}{|X|}{%
+	\multirow{2}{*}{%
+		\includegraphics[width=.43\textwidth]{THD_Logo.pdf}
+	}
+	}
+	& \multicolumn{2}{l|}{Matrikelnummer: \matrnr}\\
+	\cline{3-4}
+	\multicolumn{2}{|p{.45\textwidth}|}{}
+	& 
+	\multicolumn{2}{p{.45\textwidth}|}{} \\
+	\hline
+	\textbf{Kurs:} & \course & \textbf{Semester:} & \semester \\
+	\hline
+	
+	\textbf{Prüfer:} & \multicolumn{3}{p{.7\textwidth}|}{\theauthor} \\
+	\hline
+	\end{tabularx}
+	}
+}
+
+\chead[]{\usebox\headbox}
+\cfoot{\Seiten}
+

@@ -1,0 +1,51 @@
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx,amssymb,amsmath,multirow,tabularx,pgf,pgfpages}
+\usepackage{libertine}
+\usepackage{tikz}
+\usepackage{standalone}
+\usepackage[ngerman]{babel}
+
+\usepackage{listings}
+\usepackage{booktabs}
+\usetikzlibrary{datavisualization}
+
+%%% Folgendes bitte anpassen %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\theauthor}{Prof.~Dr.~A. Fischer}
+\newcommand{\thedate}{04.02.2021}
+\newcommand{\thetime}{08:30}
+\newcommand{\semester}{WS 2020/21}
+\newcommand{\course}{Computernetze}
+\newcommand{\programme}{BA Medientechnik \quad Medieninformatik}
+\newcommand{\examtype}{Take-Home Exam}
+\newcommand{\duration}{90 Minuten}
+\newcommand{\supplies}{Keine Beschränkung}
+\newcommand{\faculty}{Angewandte Informatik}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input{matrnr}
+
+\input{thdstyle}
+
+\begin{document}
+\input{titlepage}
+
+\begin{questions}
+
+	\section{Einführung}
+	\input{05_Rechnung_Leitungsvermittlung.tex}
+	\clearpage
+
+	\section{HTTP}
+	\input{05_HTTP_Persistent_kein_Pipelining.tex}
+	\clearpage
+
+	\section{DNS}
+	\input{05_DNS.tex}
+	\clearpage
+
+	\section{IP}
+	\input{05_IP_Header.tex}
+
+\end{questions}
+\end{document}
