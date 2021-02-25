@@ -16,6 +16,10 @@ def read_seeds():
 
 class ExamCreator:
     def __init__(self, seed, generators, pdfdir="out"):
+        try:
+            os.mkdir(pdfdir)
+        except FileExistsError:
+            pass
         self.seed = seed
         self.targetdir = str(seed)
         self.maindir = os.getcwd()
