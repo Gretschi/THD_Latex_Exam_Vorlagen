@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import os
 from cairosvg import svg2png
 
 TEMPLATE_CMD = """
