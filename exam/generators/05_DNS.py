@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os
+from cairosvg import svg2png
 
 TEMPLATE_CMD = """
 \\newcommand{{\\rekit}}{{{rekit}}}
@@ -55,11 +56,8 @@ def write_tex(rng):
     ctx = get_ctx(rng)
     with open("DNS_commands.tex", "w") as commandfile:
         commandfile.write(get_cmdstr(ctx))
-    dnscontents = get_DNS_contents(ctx)
-    with open("DNS_Hierarchie.svg", "w") as dnsfile:
-        dnsfile.write(dnscontents)
-        os.system("convert -density 150 DNS_Hierarchie.svg DNS_Hierarchie.png")
-        os.system("rm DNS_Hierarchie.svg")
+    dnscontents = get_DNS_contents(ctx).encode('utf-8')
+    svg2png(bytestring=dnscontents, write_to="DNS_Hierarchie.png", dpi=150)
 
 def generate(rng):
     write_tex(rng)
