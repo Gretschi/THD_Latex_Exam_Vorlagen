@@ -43,7 +43,7 @@ def get_cmdstr(ctx):
     return TEMPLATE_CMD.format(**ctx)
 
 def get_DNS_contents(ctx):
-    with open("tex_base/DNS-Hierarchie.svg", "r") as dnsfile:
+    with open("tex_base/DNS_Hierarchie.svg", "r") as dnsfile:
         content = dnsfile.read()
         return content.format(**ctx)
 
