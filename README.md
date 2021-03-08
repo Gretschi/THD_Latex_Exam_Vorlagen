@@ -8,7 +8,7 @@ It is a significant extension of my LaTeX exam framework available in my
 ## Requirements
 
 The main requirements are a reasonable LaTeX setup and Python (3) for the
-dynamic parts.  A makefile is used to streamline the LaTeX compilation process.
+dynamic parts. [Latexmk](https://www.ctan.org/pkg/latexmk/) is used to streamline the LaTeX compilation process.
 [Jinja2](https://palletsprojects.com/p/jinja/) is used as template engine.
 The DNS example depends on the [`cairosvg`](https://cairosvg.org/) module
 to convert the SVG input file to a PNG file usable by LaTeX.
