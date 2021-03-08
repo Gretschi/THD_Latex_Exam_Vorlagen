@@ -1,16 +1,22 @@
 #!/usr/bin/env python
 
-TEMPLATE_CMD = """
-\\newcommand{{\\datarate}}{{{datarate}}}
-\\newcommand{{\\channels}}{{{channels}}}
-\\newcommand{{\\switchingdelay}}{{{switchingdelay}}}
-\\newcommand{{\\data}}{{{data}}}
-\\newcommand{{\\channelrate}}{{{channelrate}}}
-\\newcommand{{\\transdelay}}{{{transdelay}}}
-\\newcommand{{\\result}}{{{result}}}
-"""
+import os
+import jinja2
+latex_jinja_env = jinja2.Environment(
+    block_start_string = '\BLOCK{',
+    block_end_string = '}',
+    variable_start_string = '\VAR{',
+    variable_end_string = '}',
+    comment_start_string = '\#{',
+    comment_end_string = '}',
+    line_statement_prefix = '%-',
+    line_comment_prefix = '%#',
+    trim_blocks = True,
+    autoescape = False,
+    loader = jinja2.FileSystemLoader(os.path.abspath('tex_templates')),
+)
 
-def get_ctx(rng):
+def get_basic_ctx(rng):
     return {
         "datarate": rng.randint(10, 100),
         "channels": rng.randint(10, 30),
@@ -18,7 +24,7 @@ def get_ctx(rng):
         "data": rng.randint(10, 900),
         }
 
-def compute(ctx):
+def compute_solution(ctx):
     channelrate = ctx["datarate"]/ctx["channels"]
     transdelay = ctx["data"]/channelrate
     result = ctx["switchingdelay"] + transdelay
@@ -27,25 +33,22 @@ def compute(ctx):
     ctx["result"] = round(result, 2)
     return ctx
 
-def get_cmdstr(ctx):
-    return TEMPLATE_CMD.format(**ctx)
-
-def print_tex(rng):
-    ctx = get_ctx(rng)
-    ctx = compute(ctx)
-    print(get_cmdstr(ctx))
+def get_rendered(rng):
+    ctx = get_basic_ctx(rng)
+    ctx = compute_solution(ctx)
+    template = latex_jinja_env.get_template('05_Rechnung_Leitungsvermittlung.tex')
+    return template.render(ctx)
 
 def write_tex(rng):
-    ctx = get_ctx(rng)
-    ctx = compute(ctx)
-    with open("Leitungsvermittlung_commands.tex", "w") as commandfile:
-        commandfile.write(get_cmdstr(ctx))
+    content = get_rendered(rng)
+    with open("05_Rechnung_Leitungsvermittlung.tex", "w") as questionfile:
+        questionfile.write(content)
 
 def generate(rng):
     write_tex(rng)
-    files = ["Leitungsvermittlung_commands.tex"]
+    files = ["05_Rechnung_Leitungsvermittlung.tex"]
     return files
 
 if __name__ == "__main__":
     import random
-    print_tex(random)
+    print(get_rendered(random))
