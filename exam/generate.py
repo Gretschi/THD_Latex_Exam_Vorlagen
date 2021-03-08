@@ -5,6 +5,21 @@ import sys, os, shutil
 
 import modloader
 
+import jinja2
+latex_jinja_env = jinja2.Environment(
+    block_start_string = '\BLOCK{',
+    block_end_string = '}',
+    variable_start_string = '\VAR{',
+    variable_end_string = '}',
+    comment_start_string = '\#{',
+    comment_end_string = '}',
+    line_statement_prefix = '%-',
+    line_comment_prefix = '%#',
+    trim_blocks = True,
+    autoescape = False,
+    loader = jinja2.FileSystemLoader(os.path.abspath('tex_base')),
+)
+
 def read_seeds():
     with open("seeds.txt", 'r') as seedsfile:
         try:
@@ -29,18 +44,37 @@ class ExamCreator:
 
     def prepare(self):
         shutil.copytree("tex_base", self.targetdir)
-        with open(os.path.join(self.targetdir, "matrnr.tex"), "w") as matrnrfile:
-            matrnrfile.write("\\newcommand{{\\matrnr}}{{{matrnr}}}".format(matrnr=self.seed))
 
     def generate(self):
         for generator in self.generators:
-            files = generator.generate(self.rng)
-            for filename in files:
-                shutil.move(filename, self.targetdir)
+            template_files = generator.FILES
+            context = generator.get_context(self.rng)
+            self.process_all_templates(template_files, context)
 
-    def make(self):
+    def process_all_templates(self, template_files, context):
+        for template_file in template_files:
+            self.process_template(template_file, context)
+
+    def process_template(self, template_file, context):
+        template = latex_jinja_env.get_template(template_file)
+        rendered_template = template.render(context)
+        with open(os.path.join(self.targetdir, template_file), "w") as destination_file:
+            destination_file.write(rendered_template)
+
+    def make_exam(self):
+        context = {"matrnr": self.seed, "printanswers": "\\noprintanswers"}
+        self.process_template("exam.tex", context)
         os.chdir(self.targetdir)
-        os.system("make")
+        os.system("latexmk -pdf exam.tex")
+        shutil.copy("exam.pdf", "{}.pdf".format(self.seed))
+        os.chdir(self.maindir)
+
+    def make_solution(self):
+        context = {"matrnr": self.seed, "printanswers": "\\printanswers"}
+        self.process_template("exam.tex", context)
+        os.chdir(self.targetdir)
+        os.system("latexmk -pdf exam.tex")
+        shutil.copy("exam.pdf", "{}_sol.pdf".format(self.seed))
         os.chdir(self.maindir)
 
     def move_to_pdfdir(self):
@@ -55,7 +89,7 @@ class ExamCreator:
 
 if __name__ == "__main__":
     seeds = read_seeds()
-    generators = sorted(modloader.get_modules('generators', 'generate'), key=lambda g: g.__name__)
+    generators = sorted(modloader.get_modules('generators', 'get_context'), key=lambda g: g.__name__)
     if len(sys.argv) > 1:
         if sys.argv[1] == "s":
             seeds = seeds[0:1]
@@ -65,6 +99,7 @@ if __name__ == "__main__":
     for creator in creators:
         creator.prepare()
         creator.generate()
-        creator.make()
+        creator.make_exam()
+        creator.make_solution()
         creator.move_to_pdfdir()
         creator.clean()

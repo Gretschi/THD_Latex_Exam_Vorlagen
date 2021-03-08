@@ -1,3 +1,5 @@
+\documentclass[addpoints,12pt]{exam}
+
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{graphicx,amssymb,amsmath,multirow,tabularx,pgf,pgfpages}
@@ -10,6 +12,10 @@
 \usepackage{booktabs}
 \usetikzlibrary{datavisualization}
 
+%%% Properly handle Jinja statements when compiling directly %%%%%%%%
+\newcommand{\VAR}[1]{\textcolor{blue}{\texttt{VAR:} #1}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 %%% Folgendes bitte anpassen %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newcommand{\theauthor}{Prof.~Dr.~A. Fischer}
 \newcommand{\thedate}{04.02.2021}
@@ -21,13 +27,13 @@
 \newcommand{\duration}{90 Minuten}
 \newcommand{\supplies}{Keine Beschränkung}
 \newcommand{\faculty}{Angewandte Informatik}
+\newcommand{\matrnr}{\VAR{matrnr}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\input{matrnr}
 
 \input{thdstyle}
 
 \begin{document}
+\VAR{printanswers}
 \input{titlepage}
 
 \begin{questions}
