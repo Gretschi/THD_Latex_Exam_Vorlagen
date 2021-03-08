@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import random
-import sys, os, shutil
+import sys, os, shutil, tempfile
 
 import modloader
 
@@ -36,14 +36,15 @@ class ExamCreator:
         except FileExistsError:
             pass
         self.seed = seed
-        self.targetdir = str(seed)
+        self.targetdir_obj = tempfile.TemporaryDirectory()
+        self.targetdir = self.targetdir_obj.name
         self.maindir = os.getcwd()
         self.rng = random.Random(seed)
         self.generators = generators
         self.pdfdir = os.path.join(os.getcwd(), pdfdir)
 
     def prepare(self):
-        shutil.copytree("tex_base", self.targetdir)
+        shutil.copytree("tex_base", self.targetdir, dirs_exist_ok=True)
 
     def generate(self):
         for generator in self.generators:
@@ -63,12 +64,12 @@ class ExamCreator:
 
     def make_exam(self):
         context = {"matrnr": self.seed, "printanswers": "\\noprintanswers"}
-        target_file = "{}.pdf".format(self.seed)
+        target_file = os.path.join(self.pdfdir, "{}.pdf".format(self.seed))
         self.make(context, target_file)
 
     def make_solution(self):
         context = {"matrnr": self.seed, "printanswers": "\\printanswers"}
-        target_file = "{}_sol.pdf".format(self.seed)
+        target_file = os.path.join(self.pdfdir, "{}_sol.pdf".format(self.seed))
         self.make(context, target_file)
 
     def make(self, context, target_file):
@@ -78,17 +79,12 @@ class ExamCreator:
         shutil.copy("exam.pdf", target_file)
         os.chdir(self.maindir)
 
-    def move_to_pdfdir(self):
-        pdfexam = os.path.join(self.targetdir, "{}.pdf".format(self.seed))
-        pdfsol = os.path.join(self.targetdir, "{}_sol.pdf".format(self.seed))
-        shutil.copy(pdfexam, self.pdfdir)
-        shutil.copy(pdfsol, self.pdfdir)
-
     def clean(self):
-        shutil.rmtree(self.targetdir)
+        self.targetdir_obj.cleanup()
 
 
 if __name__ == "__main__":
+    cleanup = True
     seeds = read_seeds()
     generators = sorted(modloader.get_modules('generators', 'get_context'), key=lambda g: g.__name__)
     if len(sys.argv) > 1:
@@ -98,9 +94,11 @@ if __name__ == "__main__":
             seeds = [int(sys.argv[1])]
     creators = [ExamCreator(seed, generators) for seed in seeds]
     for creator in creators:
-        creator.prepare()
-        creator.generate()
-        creator.make_exam()
-        creator.make_solution()
-        creator.move_to_pdfdir()
-        creator.clean()
+        try:
+            creator.prepare()
+            creator.generate()
+            creator.make_exam()
+            creator.make_solution()
+        finally:
+            if cleanup:
+                creator.clean()
