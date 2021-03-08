@@ -63,18 +63,19 @@ class ExamCreator:
 
     def make_exam(self):
         context = {"matrnr": self.seed, "printanswers": "\\noprintanswers"}
-        self.process_template("exam.tex", context)
-        os.chdir(self.targetdir)
-        os.system("latexmk -pdf exam.tex")
-        shutil.copy("exam.pdf", "{}.pdf".format(self.seed))
-        os.chdir(self.maindir)
+        target_file = "{}.pdf".format(self.seed)
+        self.make(context, target_file)
 
     def make_solution(self):
         context = {"matrnr": self.seed, "printanswers": "\\printanswers"}
+        target_file = "{}_sol.pdf".format(self.seed)
+        self.make(context, target_file)
+
+    def make(self, context, target_file):
         self.process_template("exam.tex", context)
         os.chdir(self.targetdir)
         os.system("latexmk -pdf exam.tex")
-        shutil.copy("exam.pdf", "{}_sol.pdf".format(self.seed))
+        shutil.copy("exam.pdf", target_file)
         os.chdir(self.maindir)
 
     def move_to_pdfdir(self):
