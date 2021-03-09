@@ -9,15 +9,15 @@ als Folge von Bytes in Hexadezimaldarstellung:
 \hfill
 \begin{minipage}{.45\linewidth}
 \begin{verbatim}
-\VAR{IPHeader}
+\VAR{packet}
 \end{verbatim}
 \end{minipage}
 
 Beantworten Sie dazu folgende Fragen:
 \setlength\answerskip{\dimexpr-\baselineskip}
 \begin{parts}
-	\part[1] Handelt es sich hierbei um ein IPv4 oder ein IPv6 Paket? \answerline[\VAR{version}]
-	\part[1] Nach wie vielen Schritten wird dieses Paket verworfen? \answerline[\VAR{ttl}]
+	\part[1] Handelt es sich hierbei um ein IPv4 oder ein IPv6 Paket? \answerline[\VAR{packet.version}]
+	\part[1] Nach wie vielen Schritten wird dieses Paket verworfen? \answerline[\VAR{packet.ttl}]
 	\part[3] Wie lautet der \VAR{srcdst} des Pakets?
 	\begin{solutionbox}{1cm}
 			\VAR{srcdstip}

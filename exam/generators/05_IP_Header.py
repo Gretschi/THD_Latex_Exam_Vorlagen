@@ -42,9 +42,7 @@ class IPv4:
 def get_context(rng):
     ctx = {}
     packet = IPv4(rng)
-    ctx["IPHeader"] = str(packet)
-    ctx["version"] = 4
-    ctx["ttl"] = packet.ttl
+    ctx["packet"] = packet
     source = rng.random() < 0.5
     ctx["srcdst"] = "Absender" if source else "Empfänger"
     ctx["srcdstip"] = packet.get_source() if source else packet.get_destination()
