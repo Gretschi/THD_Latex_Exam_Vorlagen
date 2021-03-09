@@ -1,0 +1,25 @@
+\question{}
+
+\begin{minipage}{.45\linewidth}
+Nebenstehend finden Sie einen IP Header
+als Folge von Bytes in Hexadezimaldarstellung:
+
+\textbf{Hinweis:} Nutzen Sie zur Decodierung das Headerdiagramm aus den Vorlesungsfolien.
+\end{minipage}
+\hfill
+\begin{minipage}{.45\linewidth}
+\begin{verbatim}
+\VAR{IPHeader}
+\end{verbatim}
+\end{minipage}
+
+Beantworten Sie dazu folgende Fragen:
+\setlength\answerskip{\dimexpr-\baselineskip}
+\begin{parts}
+	\part[1] Handelt es sich hierbei um ein IPv4 oder ein IPv6 Paket? \answerline[\VAR{version}]
+	\part[1] Nach wie vielen Schritten wird dieses Paket verworfen? \answerline[\VAR{ttl}]
+	\part[3] Wie lautet der \VAR{srcdst} des Pakets?
+	\begin{solutionbox}{1cm}
+			\VAR{srcdstip}
+	\end{solutionbox}
+\end{parts}
