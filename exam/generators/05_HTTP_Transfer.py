@@ -10,9 +10,9 @@ def get_base_context(rng):
         }
 
 def compute_solution(ctx):
-    trans_d_web = round(ctx["sizeweb"] / ctx["rate"], 2)
-    trans_d_pa = round(ctx["sizepa"] / ctx["rate"], 2)
-    trans_d_pb = round(ctx["sizepb"] / ctx["rate"], 2)
+    trans_d_web = ctx["sizeweb"] / ctx["rate"]
+    trans_d_pa = ctx["sizepa"] / ctx["rate"]
+    trans_d_pb = ctx["sizepb"] / ctx["rate"]
 
     steps = [ctx["rtt"]] * 5
     steps[1] += trans_d_web
