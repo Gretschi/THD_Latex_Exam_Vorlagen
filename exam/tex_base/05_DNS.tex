@@ -15,5 +15,9 @@ Wie lange dauert eine DNS Anfrage des Clients, welche \VAR{rekit} erfolgt?
 
 
 \begin{solutionbox}{1.5cm}
-	\VAR{sol}
+	%- if rekit == 'rekursiv':
+	\[\VAR{AM}ms + \VAR{AB}ms + \VAR{AC}ms + \VAR{AI}ms = \VAR{AM + AB + AC + AI}ms\]
+	%- else
+	\[\VAR{AM}ms + \VAR{AB}ms + \VAR{AF}ms + \VAR{AJ}ms = \VAR{AM + AB + AF + AJ}ms\]
+	%- endif
 \end{solutionbox}
