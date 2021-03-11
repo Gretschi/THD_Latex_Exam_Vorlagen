@@ -18,12 +18,33 @@ to convert the SVG input file to a PNG file usable by LaTeX.
 Generate an example by calling `python generate.py` in the `exam` folder.
 Results will be put in the `out` folder.
 
-Create new dynamic questions by creating a new LaTeX file in `tex_base`,
-including it in `exam.tex` and creating an accompanying Python script in
-the `generators` directory. Python modules in this directory are expected
-to have a function `generate(rng)`, where `rng` is filled with the seeded
-Random Number Generator by the `generate.py` script. Don't forget to set
-exam metadata (time, duration, etc.) in the `exam.tex` file.
+To add your own questions, proceed with the following steps: First, create
+or copy your own exam `.tex` files into the `tex_base` folder. You can
+designate content to be randomized with the TeX expression
+`\VAR{variablename}` anywhere in the file. Don't forget to include your
+file and set exam metadata (time, duration, etc.) in the `exam.tex` file.
+
+To randomize variables, create a corresponding Python script in the
+`generators` directory. This script is expected to have two elements:
+* a `FILES` list referencing the TeX files modified by this script 
+  (e.g., `FILES = ["myquestion.tex"]`). Usually, you should keep one
+  file per script, but sometimes a question may depend on more than one
+  file (e.g., if the question itself includes further files).
+* a `get_context(rng)` method, which gets a preseeded pseudorandom number
+  generator as input. This method is supposed to return a dictionary which
+  maps variable names to their contents. This dictionary is used to
+  replace the names defined above with `\VAR{variablename}` with the
+  respective content.
+
+If your script fulfills these two requirements, it will be detected and used
+by the `generate.py` script automatically.
+
+Finally, fill the `seeds.txt` with as many integer seeds as you would like
+to generate exams. The original intent of this framework was to fill it with matriculation
+numbers, if you want to have one exam for each student. However, if you prefer having
+groups of students with the same exam (e.g., groups 1-4, with one exam per group)
+you can also use these group numbers as seeds.
+
 See the provided examples for more information.
 
 ## Example
