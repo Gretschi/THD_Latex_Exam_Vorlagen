@@ -40,10 +40,4 @@ class IPv4:
         return "{:d}.{:d}.{:d}.{:d}".format(*address.to_bytes(4, 'big'))
 
 def get_context(rng):
-    ctx = {}
-    packet = IPv4(rng)
-    ctx["packet"] = packet
-    source = rng.random() < 0.5
-    ctx["srcdst"] = "Absender" if source else "Empfänger"
-    ctx["srcdstip"] = packet.get_source() if source else packet.get_destination()
-    return ctx
+    return {"packet": IPv4(rng), "source": rng.random() < 0.5}

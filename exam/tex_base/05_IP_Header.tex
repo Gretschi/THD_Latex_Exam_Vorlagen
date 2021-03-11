@@ -18,8 +18,8 @@ Beantworten Sie dazu folgende Fragen:
 \begin{parts}
 	\part[1] Handelt es sich hierbei um ein IPv4 oder ein IPv6 Paket? \answerline[\VAR{packet.version}]
 	\part[1] Nach wie vielen Schritten wird dieses Paket verworfen? \answerline[\VAR{packet.ttl}]
-	\part[3] Wie lautet der \VAR{srcdst} des Pakets?
+	\part[3] Wie lautet der \VAR{"Absender" if source else "Empfänger"} des Pakets?
 	\begin{solutionbox}{1cm}
-			\VAR{srcdstip}
+			\VAR{packet.get_source() if source else packet.get_destination()}
 	\end{solutionbox}
 \end{parts}
