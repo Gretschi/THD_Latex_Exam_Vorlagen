@@ -12,11 +12,11 @@ Rechenweg nachvollziehbar dar um volle Punktzahl zu erhalten.
 
 \begin{solutionbox}{5cm}
 	\[
-		\VAR{datarate} MBit/s \equiv \VAR{datarate}/\VAR{channels} MBit/s = \VAR{channelrate} MBit/s \quad\textrm{pro Kanal}
+		\VAR{datarate} MBit/s \equiv \VAR{datarate}/\VAR{channels} MBit/s = \VAR{(datarate / channels)|round(2)} MBit/s \quad\textrm{pro Kanal}
 	\]
 
 	Übertragungsverzögerung:
-	\[ \frac{\VAR{data} Bit}{\VAR{channelrate} MBit/s} = \VAR{transdelay} ms\]
+	\[ \frac{\VAR{data} kBit}{\VAR{(datarate / channels)|round(2)} MBit/s} = \VAR{(data / (datarate / channels))|round(2)} ms\]
 
-	Gesamt: $\VAR{switchingdelay} ms + \VAR{transdelay} ms = \VAR{result} ms$
+	Gesamt: $\VAR{switchingdelay} ms + \VAR{(data / (datarate / channels))|round(2)} ms = \VAR{(switchingdelay + data / (datarate / channels))|round(2)} ms$
 \end{solutionbox}
