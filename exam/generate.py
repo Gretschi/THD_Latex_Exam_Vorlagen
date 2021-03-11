@@ -6,19 +6,7 @@ import sys, os, shutil, tempfile
 import modloader
 
 import jinja2
-latex_jinja_env = jinja2.Environment(
-    block_start_string = '\BLOCK{',
-    block_end_string = '}',
-    variable_start_string = '\VAR{',
-    variable_end_string = '}',
-    comment_start_string = '\#{',
-    comment_end_string = '}',
-    line_statement_prefix = '%-',
-    line_comment_prefix = '%#',
-    trim_blocks = True,
-    autoescape = False,
-    loader = jinja2.FileSystemLoader(os.path.abspath('tex_base')),
-)
+from cairosvg import svg2png
 
 def read_seeds():
     with open("seeds.txt", 'r') as seedsfile:
@@ -29,6 +17,55 @@ def read_seeds():
             sys.exit(1)
         return seeds
 
+class Processor:
+    def __init__(self, target_dir):
+        self.target_dir = target_dir
+        self.environment = self.get_environment()
+
+    def get_environment(self):
+        raise NotImplementedError
+
+    def process(self, template_file, context):
+        raise NotImplementedError
+
+
+class SVGProcessor(Processor):
+    def get_environment(self):
+        return jinja2.Environment(
+            autoescape=False,
+            loader=jinja2.FileSystemLoader(os.path.abspath('tex_base')),
+            )
+
+    def process(self, template_file, context):
+        template = self.environment.get_template(template_file)
+        rendered = template.render(context)
+        target_filename = os.path.join(self.target_dir, template_file[:-3] + "png")
+        svg2png(bytestring=rendered.encode("utf-8"), write_to=target_filename, dpi=150)
+
+class TEXProcessor(Processor):
+    def get_environment(self):
+        return jinja2.Environment(
+            block_start_string = '\BLOCK{',
+            block_end_string = '}',
+            variable_start_string = '\VAR{',
+            variable_end_string = '}',
+            comment_start_string = '\#{',
+            comment_end_string = '}',
+            line_statement_prefix = '%-',
+            line_comment_prefix = '%#',
+            trim_blocks = True,
+            autoescape = False,
+            loader = jinja2.FileSystemLoader(os.path.abspath('tex_base')),
+            )
+
+    def process(self, template_file, context):
+        template = self.environment.get_template(template_file)
+        content = template.render(context)
+        with open(os.path.join(self.target_dir, template_file), "w") as destination_file:
+            destination_file.write(content)
+
+
+
 class ExamCreator:
     def __init__(self, seed, generators, pdfdir="out"):
         try:
@@ -37,14 +74,18 @@ class ExamCreator:
             pass
         self.seed = seed
         self.targetdir_obj = tempfile.TemporaryDirectory()
-        self.targetdir = self.targetdir_obj.name
+        self.target_dir = self.targetdir_obj.name
         self.maindir = os.getcwd()
         self.rng = random.Random(seed)
         self.generators = generators
         self.pdfdir = os.path.join(os.getcwd(), pdfdir)
+        self.processors = {
+            "tex": TEXProcessor(self.target_dir),
+            "svg": SVGProcessor(self.target_dir),
+            }
 
     def prepare(self):
-        shutil.copytree("tex_base", self.targetdir, dirs_exist_ok=True)
+        shutil.copytree("tex_base", self.target_dir, dirs_exist_ok=True)
 
     def generate(self):
         for generator in self.generators:
@@ -57,10 +98,9 @@ class ExamCreator:
             self.process_template(template_file, context)
 
     def process_template(self, template_file, context):
-        template = latex_jinja_env.get_template(template_file)
-        rendered_template = template.render(context)
-        with open(os.path.join(self.targetdir, template_file), "w") as destination_file:
-            destination_file.write(rendered_template)
+        extension = template_file[-3:]
+        processor = self.processors[extension]
+        processor.process(template_file, context)
 
     def make_exam(self):
         context = {"matrnr": self.seed, "printanswers": "\\noprintanswers"}
@@ -74,7 +114,7 @@ class ExamCreator:
 
     def make(self, context, target_file):
         self.process_template("exam.tex", context)
-        os.chdir(self.targetdir)
+        os.chdir(self.target_dir)
         os.system("latexmk -pdf exam.tex")
         shutil.copy("exam.pdf", target_file)
         os.chdir(self.maindir)
