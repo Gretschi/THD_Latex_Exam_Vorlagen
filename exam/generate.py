@@ -28,6 +28,19 @@ class Processor:
     def process(self, template_file, context):
         raise NotImplementedError
 
+class GenericProcessor(Processor):
+    def get_environment(self):
+        return jinja2.Environment(
+            autoescape=False,
+            loader=jinja2.FileSystemLoader(os.path.abspath('tex_base')),
+            )
+
+    def process(self, template_file, context):
+        template = self.environment.get_template(template_file)
+        content = template.render(context)
+        target_filename = os.path.join(self.target_dir, template_file)
+        with open(target_filename, "w") as destination_file:
+            destination_file.write(content)
 
 class SVGProcessor(Processor):
     def get_environment(self):
@@ -83,6 +96,7 @@ class ExamCreator:
             "tex": TEXProcessor(self.target_dir),
             "svg": SVGProcessor(self.target_dir),
             }
+        self.default_processor = GenericProcessor(self.target_dir)
 
     def prepare(self):
         shutil.copytree("tex_base", self.target_dir, dirs_exist_ok=True)
@@ -99,7 +113,7 @@ class ExamCreator:
 
     def process_template(self, template_file, context):
         extension = template_file[-3:]
-        processor = self.processors[extension]
+        processor = self.processors.get(extension, self.default_processor)
         processor.process(template_file, context)
 
     def make_exam(self):
